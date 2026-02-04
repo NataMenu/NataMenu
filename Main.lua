@@ -1,2 +1,802 @@
---[[Obfuscated NataMenu Script]]
-local _={}local a="NataMenu"local b=game;local c=b:GetService("RunService")local d=b:GetService("UserInputService")local e=b:GetService("Players")local f=b:GetService("Workspace")local g=b:GetService("Lighting")local h=e.LocalPlayer;local i=f.CurrentCamera;local j={}j.Aimbot={Enabled=true,FOV=100,Smoothness=0.5,TargetPart="Head",VisibleCheck=true,TeamCheck=true}j.Visuals={Enabled=true,Boxes=true,Names=true,Health=true,Distance=true,Tracers=false,TeamCheck=true,MaxDistance=1000}j.Misc={NightMode=false,Fullbright=false,NoClip=false,WalkSpeed=16,JumpPower=50,FPSBoost=false,AutoClick=false,AntiAFK=true,Bypass=false}local k=Color3.fromRGB(0,120,255)local l=Color3.fromRGB(100,180,255)local m=Color3.fromRGB(150,220,255)local n=Color3.new(0.9,0.9,0.9)local function o()local p,q=pcall(function()loadstring(game:HttpGet("https://raw.githubusercontent.com/Exunys/Aimbot-V2/main/Resources/Scripts/Raw%20Main.lua"))()end)if q and getgenv().Aimbot then local r=getgenv().Aimbot;r.FOVSettings.Color=m;r.FOVSettings.Visible=true;r.Enabled=j.Aimbot.Enabled;r.FOV=j.Aimbot.FOV;r.Smoothness=j.Aimbot.Smoothness;r.TargetPart=j.Aimbot.TargetPart end end;o()local function s()if j.Misc.Bypass then pcall(function()local t;t=hookmetamethod(game,"__namecall",function(u,...)local v=getnamecallmethod()local w={...}if v=="Kick"or v=="kick"then return nil end;return t(u,unpack(w))end)end)pcall(function()game:GetService("ScriptContext").Error:Connect(function()end)end)end end;local x={Drawings={}}local y=drawing or Drawing;function x:AddPlayer(z)if z==h then return end;self.Drawings[z]={Box=y.new("Square"),Name=y.new("Text"),Health=y.new("Text"),Distance=y.new("Text")}end;function x:Update()for A,B in pairs(self.Drawings)do if not A.Parent or not A.Character or not j.Visuals.Enabled then for C,D in pairs(B)do D.Visible=false end;continue end;local E=A.Character;local F=E:FindFirstChild("HumanoidRootPart")local G=E:FindFirstChild("Humanoid")if F and G then local H,I=i:WorldToViewportPoint(F.Position)local J=(i.CFrame.Position-F.Position).Magnitude;if I and J<=j.Visuals.MaxDistance then local K=j.Visuals.TeamCheck and A.Team==h.Team;local L=K and Color3.fromRGB(0,200,0)or m;if j.Visuals.Boxes then local M=Vector2.new(2000/J*2,2000/J*3)B.Box.Visible=true;B.Box.Size=M;B.Box.Position=Vector2.new(H.X-M.X/2,H.Y-M.Y/2)B.Box.Color=L;B.Box.Thickness=1 else B.Box.Visible=false end;if j.Visuals.Names then B.Name.Visible=true;B.Name.Text=A.Name;B.Name.Position=Vector2.new(H.X,H.Y-(2000/J*1.5)-15)B.Name.Center=true;B.Name.Outline=true;B.Name.Color=n;B.Name.Size=14 else B.Name.Visible=false end;if j.Visuals.Health then B.Health.Visible=true;B.Health.Text=math.floor(G.Health).." HP"B.Health.Position=Vector2.new(H.X,H.Y+(2000/J*1.5)+5)B.Health.Center=true;B.Health.Outline=true;B.Health.Color=l;B.Health.Size=14 else B.Health.Visible=false end else for N,D in pairs(B)do D.Visible=false end end end end end;c.RenderStepped:Connect(function()x:Update()end)for O,P in ipairs(e:GetPlayers())do x:AddPlayer(P)end;e.PlayerAdded:Connect(function(Q)x:AddPlayer(Q)end)local R={NightModeEnabled=false,FullbrightEnabled=false,NoClipEnabled=false,FPSBoostEnabled=false,AutoClickEnabled=false,AntiAFKEnabled=true}function R:ToggleNightMode(S)if S then local T=Instance.new("ColorCorrectionEffect")T.Name="NataMenu_NightMode"T.Parent=g;T.Brightness=-0.15;T.Contrast=0.05;T.TintColor=Color3.fromRGB(80,130,180)T.Saturation=-0.3 else local U=g:FindFirstChild("NataMenu_NightMode")if U then U:Destroy()end end end;function R:ToggleFullbright(S)if S then g.GlobalShadows=false;g.OutdoorAmbient=Color3.new(0.9,0.9,0.9)g.Brightness=1.5;g.ClockTime=14 else g.GlobalShadows=true;g.OutdoorAmbient=Color3.fromRGB(128,128,128)g.Brightness=1 end end;function R:ToggleNoClip(S)j.Misc.NoClip=S;if S then local V=h.Character;if V then local W=V:FindFirstChild("Humanoid")if W then W:ChangeState(11)end end end end;function R:SetWalkSpeed(X)j.Misc.WalkSpeed=X;local V=h.Character;if V then local W=V:FindFirstChild("Humanoid")if W then W.WalkSpeed=X end end end;function R:SetJumpPower(Y)j.Misc.JumpPower=Y;local V=h.Character;if V then local W=V:FindFirstChild("Humanoid")if W then W.JumpPower=Y end end end;function R:ToggleFPSBoost(S)if S then settings().Rendering.QualityLevel=1;settings().Rendering.MeshPartDetailLevel=Enum.MeshPartDetailLevel.Level01;f.Terrain.WaterReflection=false;f.Terrain.WaterWaveSize=0;f.Terrain.WaterWaveSpeed=0 else settings().Rendering.QualityLevel=21;settings().Rendering.MeshPartDetailLevel=Enum.MeshPartDetailLevel.Level04 end end;function R:ToggleAutoClick(S)j.Misc.AutoClick=S;if S then spawn(function()while j.Misc.AutoClick do mouse1click()wait(0.1)end end)end end;function R:ToggleAntiAFK(S)j.Misc.AntiAFK=S;if S then local Z=game:GetService("VirtualUser")h.Idled:Connect(function()if j.Misc.AntiAFK then Z:Button2Down(Vector2.new(0,0),i.CFrame)wait(1)Z:Button2Up(Vector2.new(0,0),i.CFrame)end end)end end;function R:ToggleBypass(S)j.Misc.Bypass=S;if S then s()end end;function R:ShowCredits()local _a=Instance.new("ScreenGui",game:GetService("CoreGui"))_a.Name="NataMenuCredits"local ab=Instance.new("Frame",_a)ab.Size=UDim2.new(0,300,0,200)ab.Position=UDim2.new(0.5,-150,0.5,-100)ab.BackgroundColor3=Color3.fromRGB(20,20,20)ab.BorderSizePixel=1;ab.BorderColor3=k;local ac=Instance.new("TextLabel",ab)ac.Text="NATA.MENU CREDITS"ac.Size=UDim2.new(1,0,0,40)ac.Position=UDim2.new(0,0,0,10)ac.TextColor3=m;ac.Font=Enum.Font.SourceSansBold;ac.TextSize=18;ac.BackgroundTransparency=1;local ad=Instance.new("TextLabel",ab)ad.Text="Designer: Farpa"ad.Size=UDim2.new(1,0,0,30)ad.Position=UDim2.new(0,0,0,60)ad.TextColor3=l;ad.Font=Enum.Font.SourceSans;ad.TextSize=16;ad.BackgroundTransparency=1;local ae=Instance.new("TextLabel",ab)ae.Text="Programmer: Toque"ae.Size=UDim2.new(1,0,0,30)ae.Position=UDim2.new(0,0,0,90)ae.TextColor3=l;ae.Font=Enum.Font.SourceSans;ae.TextSize=16;ae.BackgroundTransparency=1;local af=Instance.new("TextLabel",ab)af.Text="Version: 1.0"af.Size=UDim2.new(1,0,0,30)af.Position=UDim2.new(0,0,0,120)af.TextColor3=Color3.fromRGB(150,150,150)af.Font=Enum.Font.SourceSans;af.TextSize=14;af.BackgroundTransparency=1;local ag=Instance.new("TextButton",ab)ag.Text="Close"ag.Size=UDim2.new(0,80,0,30)ag.Position=UDim2.new(0.5,-40,1,-40)ag.BackgroundColor3=Color3.fromRGB(30,30,30)ag.TextColor3=n;ag.Font=Enum.Font.SourceSans;ag.TextSize=14;ag.BorderSizePixel=1;ag.BorderColor3=k;ag.MouseButton1Click:Connect(function()_a:Destroy()end)end;e.PlayerAdded:Connect(function(ah)if ah==h then ah.CharacterAdded:Connect(function(ai)wait(1)R:SetWalkSpeed(j.Misc.WalkSpeed)R:SetJumpPower(j.Misc.JumpPower)end)end end)local aj={Tabs={}}function aj:Init()local ak=Instance.new("ScreenGui",game:GetService("CoreGui"))ak.Name=a;local al=Instance.new("Frame",ak)al.Size=UDim2.new(0,520,0,350)al.Position=UDim2.new(0.5,-260,0.5,-175)al.BackgroundColor3=Color3.fromRGB(10,10,10)al.BorderSizePixel=1;al.BorderColor3=Color3.fromRGB(40,40,40)local am=Instance.new("Frame",al)am.Size=UDim2.new(0,140,1,0)am.BackgroundColor3=Color3.fromRGB(15,15,15)am.BorderSizePixel=0;local an=Instance.new("Frame",am)an.Size=UDim2.new(1,0,0,100)an.BackgroundTransparency=1;an.BorderSizePixel=0;local ao=Instance.new("ImageLabel",an)ao.Size=UDim2.new(1,-20,1,-10)ao.Position=UDim2.new(0,10,0,5)ao.Image="rbxassetid://119063061180459"ao.BackgroundTransparency=1;ao.ScaleType=Enum.ScaleType.Fit;local ap=Instance.new("UIGradient",ao)ap.Rotation=90;ap.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.new(1,1,1)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(200,230,255)),ColorSequenceKeypoint.new(1,Color3.new(1,1,1))})ap.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,0.3),NumberSequenceKeypoint.new(0.5,0),NumberSequenceKeypoint.new(1,0.3)})local aq=Instance.new("Frame",am)aq.Position=UDim2.new(0,0,0,110)aq.Size=UDim2.new(1,0,1,-110)aq.BackgroundTransparency=1;aq.BorderSizePixel=0;Instance.new("UIListLayout",aq)local ar=Instance.new("Frame",al)ar.Position=UDim2.new(0,150,0,10)ar.Size=UDim2.new(1,-160,1,-20)ar.BackgroundTransparency=1;ar.BorderSizePixel=0;local function as()if getgenv().Aimbot then local at=getgenv().Aimbot;at.Enabled=j.Aimbot.Enabled;at.FOV=j.Aimbot.FOV;at.Smoothness=j.Aimbot.Smoothness;at.TargetPart=j.Aimbot.TargetPart end end;function aj:CreateTab(au,av)local aw=Instance.new("TextButton",aq)aw.Size=UDim2.new(1,0,0,35)aw.BackgroundColor3=Color3.fromRGB(20,20,20)aw.Text=av.." "..au;aw.TextColor3=Color3.fromRGB(150,150,150)aw.Font=Enum.Font.SourceSans;aw.TextSize=13;aw.BorderSizePixel=0;aw.TextXAlignment=Enum.TextXAlignment.Left;local ax=Instance.new("ScrollingFrame",ar)ax.Size=UDim2.new(1,0,1,0)ax.BackgroundTransparency=1;ax.Visible=false;ax.ScrollBarThickness=2;ax.ScrollBarImageColor3=k;ax.BorderSizePixel=0;Instance.new("UIListLayout",ax).Padding=UDim.new(0,10)aw.MouseButton1Click:Connect(function()for ay,az in pairs(aj.Tabs)do az.Page.Visible=false;az.Btn.TextColor3=Color3.fromRGB(150,150,150)az.Btn.BackgroundColor3=Color3.fromRGB(20,20,20)end;ax.Visible=true;aw.TextColor3=n;aw.BackgroundColor3=Color3.fromRGB(30,30,30)end)aj.Tabs[au]={Page=ax,Btn=aw}return ax end;local function aA(aB,aC,aD,aE)local aF=Instance.new("Frame",aB)aF.Size=UDim2.new(1,-10,0,35)aF.BackgroundTransparency=1;aF.BorderSizePixel=0;local aG=Instance.new("TextButton",aF)aG.Size=UDim2.new(1,0,1,0)aG.BackgroundColor3=Color3.fromRGB(20,20,20)aG.Text=(aD and "✓ "or "✗ ")..aC;aG.TextColor3=aD and m or Color3.fromRGB(150,150,150)aG.Font=Enum.Font.SourceSans;aG.TextSize=13;aG.TextXAlignment=Enum.TextXAlignment.Left;aG.BorderSizePixel=0;aG.MouseButton1Click:Connect(function()aD=not aD;aG.Text=(aD and "✓ "or "✗ ")..aC;aG.TextColor3=aD and m or Color3.fromRGB(150,150,150)aE(aD)end)end;local function aH(aB,aC,aI,aJ,aK,aL)local aM=Instance.new("Frame",aB)aM.Size=UDim2.new(1,-10,0,50)aM.BackgroundTransparency=1;aM.BorderSizePixel=0;local aN=Instance.new("TextLabel",aM)aN.Text="📏 "..aC..": "..aK;aN.Size=UDim2.new(1,0,0,20)aN.TextColor3=n;aN.BackgroundTransparency=1;aN.TextXAlignment=Enum.TextXAlignment.Left;aN.Font=Enum.Font.SourceSans;aN.TextSize=13;aN.BorderSizePixel=0;local aO=Instance.new("TextButton",aM)aO.Position=UDim2.new(0,0,0,25)aO.Size=UDim2.new(1,0,0,6)aO.BackgroundColor3=Color3.fromRGB(40,40,40)aO.Text="";aO.BorderSizePixel=0;local aP=Instance.new("Frame",aO)aP.Size=UDim2.new((aK-aI)/(aJ-aI),0,1,0)aP.BackgroundColor3=m;aP.BorderSizePixel=0;aO.MouseButton1Down:Connect(function()local aQ;aQ=c.RenderStepped:Connect(function()local aR=d:GetMouseLocation().X;local aS=math.clamp((aR-aO.AbsolutePosition.X)/aO.AbsoluteSize.X,0,1)local aT=aI+(aJ-aI)*aS;if aJ<=5 then aT=tonumber(string.format("%.1f",aT))else aT=math.floor(aT)end;aP.Size=UDim2.new(aS,0,1,0)aN.Text="📏 "..aC..": "..aT;aL(aT)end)local aU=d.InputEnded:Connect(function(aV)if aV.UserInputType==Enum.UserInputType.MouseButton1 then aQ:Disconnect()aU:Disconnect()end end)end)end;local function aW(aB,aC,aX,aY)local aZ=Instance.new("Frame",aB)aZ.Size=UDim2.new(1,-10,0,35)aZ.BackgroundTransparency=1;aZ.BorderSizePixel=0;local a_=Instance.new("TextButton",aZ)a_.Size=UDim2.new(1,0,1,0)a_.BackgroundColor3=Color3.fromRGB(25,25,25)a_.Text="▼ "..aC..": "..aX[1]a_.TextColor3=n;a_.Font=Enum.Font.SourceSans;a_.TextSize=13;a_.TextXAlignment=Enum.TextXAlignment.Left;a_.BorderSizePixel=0;local b0=1;a_.MouseButton1Click:Connect(function()b0=b0+1;if b0>#aX then b0=1 end;a_.Text="▼ "..aC..": "..aX[b0]aY(aX[b0])end)end;local function b1(aB,aC,aD,b2)local b3=Instance.new("TextButton",aB)b3.Size=UDim2.new(1,-10,0,35)b3.BackgroundColor3=Color3.fromRGB(25,25,25)b3.Text=aD.." "..aC;b3.TextColor3=n;b3.Font=Enum.Font.SourceSans;b3.TextSize=13;b3.BorderSizePixel=0;b3.MouseButton1Click:Connect(b2)end;local b4=aj:CreateTab("LegitBot","🎯")aA(b4,"Aimbot",j.Aimbot.Enabled,function(b5)j.Aimbot.Enabled=b5;as()end)aH(b4,"Field of View",10,600,j.Aimbot.FOV,function(b6)j.Aimbot.FOV=b6;as()end)aH(b4,"Smoothness",0,5,j.Aimbot.Smoothness,function(b7)j.Aimbot.Smoothness=b7;as()end)aW(b4,"Target Part",{"Head","HumanoidRootPart","Torso"},function(b8)j.Aimbot.TargetPart=b8;as()end)aA(b4,"Team Check",j.Aimbot.TeamCheck,function(b9)j.Aimbot.TeamCheck=b9;as()end)local ba=aj:CreateTab("Visuals","👁")aA(ba,"Enable ESP",j.Visuals.Enabled,function(bb)j.Visuals.Enabled=bb end)aA(ba,"Boxes",j.Visuals.Boxes,function(bc)j.Visuals.Boxes=bc end)aA(ba,"Names",j.Visuals.Names,function(bd)j.Visuals.Names=bd end)aA(ba,"Health",j.Visuals.Health,function(be)j.Visuals.Health=be end)aA(ba,"Team Check",j.Visuals.TeamCheck,function(bf)j.Visuals.TeamCheck=bf end)aH(ba,"Max Distance",100,5000,j.Visuals.MaxDistance,function(bg)j.Visuals.MaxDistance=bg end)local bh=aj:CreateTab("Misc","⚙")local bi={"Default","Blue","Night","Purple","Sunset","Ocean"}local bj={Default=nil,Blue=Color3.fromRGB(100,180,255),Night=Color3.fromRGB(50,100,150),Purple=Color3.fromRGB(180,100,255),Sunset=Color3.fromRGB(255,160,100),Ocean=Color3.fromRGB(0,120,200)}aW(bh,"Sky Color",bi,function(bk)local bl=g:FindFirstChild("NataMenu_Sky")local bm=g:FindFirstChild("NataMenu_SkyTint")if bl then bl:Destroy()end;if bm then bm:Destroy()end;if bk=="Default"then return end;local bn=bj[bk]local bo=Instance.new("Sky")bo.Name="NataMenu_Sky"bo.Parent=g;bo.CelestialBodiesShown=false;local bp=Instance.new("ColorCorrectionEffect")bp.Name="NataMenu_SkyTint"bp.Parent=g;bp.Enabled=true;bp.TintColor=bn;bp.Brightness=-0.05 end)aA(bh,"Night Mode",j.Misc.NightMode,function(bq)j.Misc.NightMode=bq;R:ToggleNightMode(bq)end)aA(bh,"Fullbright",j.Misc.Fullbright,function(br)j.Misc.Fullbright=br;R:ToggleFullbright(br)end)aA(bh,"Noclip",j.Misc.NoClip,function(bs)j.Misc.NoClip=bs;R:ToggleNoClip(bs)end)aH(bh,"Walk Speed",16,100,j.Misc.WalkSpeed,function(bt)j.Misc.WalkSpeed=bt;R:SetWalkSpeed(bt)end)aH(bh,"Jump Power",50,200,j.Misc.JumpPower,function(bu)j.Misc.JumpPower=bu;R:SetJumpPower(bu)end)aA(bh,"FPS Boost",j.Misc.FPSBoost,function(bv)j.Misc.FPSBoost=bv;R:ToggleFPSBoost(bv)end)aA(bh,"Auto Click",j.Misc.AutoClick,function(bw)j.Misc.AutoClick=bw;R:ToggleAutoClick(bw)end)aA(bh,"Anti-AFK",j.Misc.AntiAFK,function(bx)j.Misc.AntiAFK=bx;R:ToggleAntiAFK(bx)end)aA(bh,"Bypass",j.Misc.Bypass,function(by)j.Misc.Bypass=by;R:ToggleBypass(by)end)b1(bh,"Refresh ESP","🔄",function()for bz,bA in pairs(x.Drawings)do for bB,bC in pairs(bA)do bC:Remove()end end;x.Drawings={}for O,P in ipairs(e:GetPlayers())do x:AddPlayer(P)end end)b1(bh,"Copy Discord","📋",function()setclipboard("discord.gg/natamenu")end)b1(bh,"Hide Menu (F5)","👁",function()ak.Enabled=not ak.Enabled end)b1(bh,"Credits","⭐",function()R:ShowCredits()end)aj.Tabs["LegitBot"].Btn.TextColor3=n;aj.Tabs["LegitBot"].Btn.BackgroundColor3=Color3.fromRGB(30,30,30)aj.Tabs["LegitBot"].Page.Visible=true;local bD,bE,bF;al.InputBegan:Connect(function(bG)if bG.UserInputType==Enum.UserInputType.MouseButton1 then bD=true;bE=bG.Position;bF=al.Position end end)d.InputChanged:Connect(function(bH)if bD and bH.UserInputType==Enum.UserInputType.MouseMovement then local bI=bH.Position-bE;al.Position=UDim2.new(bF.X.Scale,bF.X.Offset+bI.X,bF.Y.Scale,bF.Y.Offset+bI.Y)end end)d.InputEnded:Connect(function(bJ)if bJ.UserInputType==Enum.UserInputType.MouseButton1 then bD=false end end)d.InputBegan:Connect(function(bK)if bK.KeyCode==Enum.KeyCode.F5 then ak.Enabled=not ak.Enabled end end)local bL=Instance.new("ScreenGui",game:GetService("CoreGui"))bL.Name="NataMenuWatermark"bL.Enabled=true;local bM=Instance.new("Frame",bL)bM.Size=UDim2.new(0,150,0,25)bM.Position=UDim2.new(1,-160,0,10)bM.BackgroundColor3=Color3.fromRGB(10,10,10)bM.BorderSizePixel=1;bM.BorderColor3=k;local bN=Instance.new("TextLabel",bM)bN.Size=UDim2.new(1,0,1,0)bN.Text="NATA.MENU v1.0"bN.TextColor3=m;bN.Font=Enum.Font.SourceSans;bN.TextSize=12;bN.BackgroundTransparency=1;local bO=Instance.new("TextLabel",ak)bO.Text="Designer: Farpa | Programmer: Toque"bO.Size=UDim2.new(0,250,0,20)bO.Position=UDim2.new(1,-260,0,40)bO.BackgroundTransparency=1;bO.TextColor3=Color3.fromRGB(150,150,150)bO.Font=Enum.Font.SourceSans;bO.TextSize=11;bO.BorderSizePixel=0;R:ToggleAntiAFK(true)end;aj:Init()c.Stepped:Connect(function()if j.Misc.NoClip and h.Character then local bP=h.Character;for bQ,bR in pairs(bP:GetDescendants())do if bR:IsA("BasePart")then bR.CanCollide=false end end end end)h.CharacterAdded:Connect(function(bS)wait(1)if bS then local W=bS:FindFirstChild("Humanoid")if W then W.WalkSpeed=j.Misc.WalkSpeed;W.JumpPower=j.Misc.JumpPower end end end)print("╔════════════════════════════════╗")print("║        NATA.MENU v1.0          ║")print("║   🎯 LegitBot   👁 Visuals     ║")print("║   ⚙ Misc        🚀 Loaded!     ║")print("║   🖼 Logo Added                ║")print("╚════════════════════════════════╝")print("F5 - Toggle Menu")print("Designer: Farpa | Programmer: Toque")
+-- Aimbot API atualizada
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Exunys/Aimbot-V3/main/src/Aimbot.lua"))()
+
+if getgenv().NataMenu then return end
+getgenv().NataMenu = true
+
+--// Serviços
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local Lighting = game:GetService("Lighting")
+local LocalPlayer = Players.LocalPlayer
+local Camera = Workspace.CurrentCamera
+
+--// Configurações
+local Config = {
+    Aimbot = {
+        Enabled = true,
+        FOV = 100,
+        Smoothness = 0.5,
+        TargetPart = "Head",
+        VisibleCheck = true,
+        TeamCheck = true
+    },
+    Visuals = {
+        Enabled = true,
+        Boxes = true,
+        Names = true,
+        Health = true,
+        Distance = true,
+        Tracers = false,
+        TeamCheck = true,
+        MaxDistance = 1000
+    },
+    Misc = {
+        NightMode = false,
+        Fullbright = false,
+        NoClip = false,
+        WalkSpeed = 16,
+        JumpPower = 50,
+        FPSBoost = false,
+        AutoClick = false,
+        AntiAFK = true,
+        Bypass = false
+    }
+}
+
+--// Cores
+local BLUE_COLOR = Color3.fromRGB(0, 120, 255)
+local SOFT_BLUE = Color3.fromRGB(100, 180, 255)
+local LIGHT_BLUE = Color3.fromRGB(150, 220, 255)
+local WHITE_COLOR = Color3.new(0.9, 0.9, 0.9)
+
+--// Load Aimbot
+local function LoadAimbot()
+    local success, _ = pcall(function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Exunys/Aimbot-V2/main/Resources/Scripts/Raw%20Main.lua"))()
+    end)
+    
+    if success and getgenv().Aimbot then
+        local AB = getgenv().Aimbot
+        AB.FOVSettings.Color = LIGHT_BLUE
+        AB.FOVSettings.Visible = true
+        AB.Enabled = Config.Aimbot.Enabled
+        AB.FOV = Config.Aimbot.FOV
+        AB.Smoothness = Config.Aimbot.Smoothness
+        AB.TargetPart = Config.Aimbot.TargetPart
+    end
+end
+LoadAimbot()
+
+--// Bypass System
+local function SetupBypass()
+    if Config.Misc.Bypass then
+        pcall(function()
+            local oldNamecall
+            oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+                local method = getnamecallmethod()
+                local args = {...}
+                
+                if method == "Kick" or method == "kick" then
+                    return nil
+                end
+                
+                return oldNamecall(self, unpack(args))
+            end)
+        end)
+        
+        pcall(function()
+            game:GetService("ScriptContext").Error:Connect(function() end)
+        end)
+    end
+end
+
+--// ESP
+local ESP = {Drawings = {}}
+local DrawingLib = (drawing or Drawing)
+
+function ESP:AddPlayer(player)
+    if player == LocalPlayer then return end
+    self.Drawings[player] = {
+        Box = DrawingLib.new("Square"),
+        Name = DrawingLib.new("Text"),
+        Health = DrawingLib.new("Text"),
+        Distance = DrawingLib.new("Text")
+    }
+end
+
+function ESP:Update()
+    for player, drawings in pairs(self.Drawings) do
+        if not player.Parent or not player.Character or not Config.Visuals.Enabled then
+            for _, d in pairs(drawings) do d.Visible = false end
+            continue
+        end
+        
+        local char = player.Character
+        local root = char:FindFirstChild("HumanoidRootPart")
+        local hum = char:FindFirstChild("Humanoid")
+        
+        if root and hum then
+            local pos, onScreen = Camera:WorldToViewportPoint(root.Position)
+            local dist = (Camera.CFrame.Position - root.Position).Magnitude
+            
+            if onScreen and dist <= Config.Visuals.MaxDistance then
+                local isTeam = Config.Visuals.TeamCheck and player.Team == LocalPlayer.Team
+                local color = isTeam and Color3.fromRGB(0, 200, 0) or LIGHT_BLUE
+                
+                if Config.Visuals.Boxes then
+                    local size = Vector2.new(2000/dist * 2, 2000/dist * 3)
+                    drawings.Box.Visible = true
+                    drawings.Box.Size = size
+                    drawings.Box.Position = Vector2.new(pos.X - size.X/2, pos.Y - size.Y/2)
+                    drawings.Box.Color = color
+                    drawings.Box.Thickness = 1
+                else drawings.Box.Visible = false end
+                
+                if Config.Visuals.Names then
+                    drawings.Name.Visible = true
+                    drawings.Name.Text = player.Name
+                    drawings.Name.Position = Vector2.new(pos.X, pos.Y - (2000/dist * 1.5) - 15)
+                    drawings.Name.Center = true
+                    drawings.Name.Outline = true
+                    drawings.Name.Color = WHITE_COLOR
+                    drawings.Name.Size = 14
+                else drawings.Name.Visible = false end
+                
+                if Config.Visuals.Health then
+                    drawings.Health.Visible = true
+                    drawings.Health.Text = math.floor(hum.Health) .. " HP"
+                    drawings.Health.Position = Vector2.new(pos.X, pos.Y + (2000/dist * 1.5) + 5)
+                    drawings.Health.Center = true
+                    drawings.Health.Outline = true
+                    drawings.Health.Color = SOFT_BLUE
+                    drawings.Health.Size = 14
+                else drawings.Health.Visible = false end
+            else
+                for _, d in pairs(drawings) do d.Visible = false end
+            end
+        end
+    end
+end
+
+RunService.RenderStepped:Connect(function() ESP:Update() end)
+for _, p in ipairs(Players:GetPlayers()) do ESP:AddPlayer(p) end
+Players.PlayerAdded:Connect(function(p) ESP:AddPlayer(p) end)
+
+--// Funções Misc
+local miscFunctions = {
+    NightModeEnabled = false,
+    FullbrightEnabled = false,
+    NoClipEnabled = false,
+    FPSBoostEnabled = false,
+    AutoClickEnabled = false,
+    AntiAFKEnabled = true
+}
+
+function miscFunctions:ToggleNightMode(state)
+    if state then
+        local colorCorrection = Instance.new("ColorCorrectionEffect")
+        colorCorrection.Name = "NataMenu_NightMode"
+        colorCorrection.Parent = Lighting
+        colorCorrection.Brightness = -0.15
+        colorCorrection.Contrast = 0.05
+        colorCorrection.TintColor = Color3.fromRGB(80, 130, 180)
+        colorCorrection.Saturation = -0.3
+    else
+        local cc = Lighting:FindFirstChild("NataMenu_NightMode")
+        if cc then cc:Destroy() end
+    end
+end
+
+function miscFunctions:ToggleFullbright(state)
+    if state then
+        Lighting.GlobalShadows = false
+        Lighting.OutdoorAmbient = Color3.new(0.9,0.9,0.9)
+        Lighting.Brightness = 1.5
+        Lighting.ClockTime = 14
+    else
+        Lighting.GlobalShadows = true
+        Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
+        Lighting.Brightness = 1
+    end
+end
+
+function miscFunctions:ToggleNoClip(state)
+    Config.Misc.NoClip = state
+    if state then
+        local character = LocalPlayer.Character
+        if character then
+            local humanoid = character:FindFirstChild("Humanoid")
+            if humanoid then
+                humanoid:ChangeState(11)
+            end
+        end
+    end
+end
+
+function miscFunctions:SetWalkSpeed(speed)
+    Config.Misc.WalkSpeed = speed
+    local character = LocalPlayer.Character
+    if character then
+        local humanoid = character:FindFirstChild("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = speed
+        end
+    end
+end
+
+function miscFunctions:SetJumpPower(power)
+    Config.Misc.JumpPower = power
+    local character = LocalPlayer.Character
+    if character then
+        local humanoid = character:FindFirstChild("Humanoid")
+        if humanoid then
+            humanoid.JumpPower = power
+        end
+    end
+end
+
+function miscFunctions:ToggleFPSBoost(state)
+    if state then
+        settings().Rendering.QualityLevel = 1
+        settings().Rendering.MeshPartDetailLevel = Enum.MeshPartDetailLevel.Level01
+        game:GetService("Workspace").Terrain.WaterReflection = false
+        game:GetService("Workspace").Terrain.WaterWaveSize = 0
+        game:GetService("Workspace").Terrain.WaterWaveSpeed = 0
+    else
+        settings().Rendering.QualityLevel = 21
+        settings().Rendering.MeshPartDetailLevel = Enum.MeshPartDetailLevel.Level04
+    end
+end
+
+function miscFunctions:ToggleAutoClick(state)
+    Config.Misc.AutoClick = state
+    if state then
+        spawn(function()
+            while Config.Misc.AutoClick do
+                mouse1click()
+                wait(0.1)
+            end
+        end)
+    end
+end
+
+function miscFunctions:ToggleAntiAFK(state)
+    Config.Misc.AntiAFK = state
+    if state then
+        local VirtualUser = game:GetService("VirtualUser")
+        LocalPlayer.Idled:Connect(function()
+            if Config.Misc.AntiAFK then
+                VirtualUser:Button2Down(Vector2.new(0,0), Workspace.CurrentCamera.CFrame)
+                wait(1)
+                VirtualUser:Button2Up(Vector2.new(0,0), Workspace.CurrentCamera.CFrame)
+            end
+        end)
+    end
+end
+
+function miscFunctions:ToggleBypass(state)
+    Config.Misc.Bypass = state
+    if state then
+        SetupBypass()
+    end
+end
+
+function miscFunctions:ShowCredits()
+    local creditsGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
+    creditsGui.Name = "NataMenuCredits"
+    
+    local Main = Instance.new("Frame", creditsGui)
+    Main.Size = UDim2.new(0, 300, 0, 200)
+    Main.Position = UDim2.new(0.5, -150, 0.5, -100)
+    Main.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Main.BorderSizePixel = 1
+    Main.BorderColor3 = BLUE_COLOR
+    
+    local Title = Instance.new("TextLabel", Main)
+    Title.Text = "NATA.MENU CREDITS"
+    Title.Size = UDim2.new(1, 0, 0, 40)
+    Title.Position = UDim2.new(0, 0, 0, 10)
+    Title.TextColor3 = LIGHT_BLUE
+    Title.Font = Enum.Font.SourceSansBold
+    Title.TextSize = 18
+    Title.BackgroundTransparency = 1
+    
+    local Designer = Instance.new("TextLabel", Main)
+    Designer.Text = "Designer: Farpa"
+    Designer.Size = UDim2.new(1, 0, 0, 30)
+    Designer.Position = UDim2.new(0, 0, 0, 60)
+    Designer.TextColor3 = SOFT_BLUE
+    Designer.Font = Enum.Font.SourceSans
+    Designer.TextSize = 16
+    Designer.BackgroundTransparency = 1
+    
+    local Programmer = Instance.new("TextLabel", Main)
+    Programmer.Text = "Programmer: Toque"
+    Programmer.Size = UDim2.new(1, 0, 0, 30)
+    Programmer.Position = UDim2.new(0, 0, 0, 90)
+    Programmer.TextColor3 = SOFT_BLUE
+    Programmer.Font = Enum.Font.SourceSans
+    Programmer.TextSize = 16
+    Programmer.BackgroundTransparency = 1
+    
+    local Version = Instance.new("TextLabel", Main)
+    Version.Text = "Version: 1.0"
+    Version.Size = UDim2.new(1, 0, 0, 30)
+    Version.Position = UDim2.new(0, 0, 0, 120)
+    Version.TextColor3 = Color3.fromRGB(150, 150, 150)
+    Version.Font = Enum.Font.SourceSans
+    Version.TextSize = 14
+    Version.BackgroundTransparency = 1
+    
+    local CloseBtn = Instance.new("TextButton", Main)
+    CloseBtn.Text = "Close"
+    CloseBtn.Size = UDim2.new(0, 80, 0, 30)
+    CloseBtn.Position = UDim2.new(0.5, -40, 1, -40)
+    CloseBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    CloseBtn.TextColor3 = WHITE_COLOR
+    CloseBtn.Font = Enum.Font.SourceSans
+    CloseBtn.TextSize = 14
+    CloseBtn.BorderSizePixel = 1
+    CloseBtn.BorderColor3 = BLUE_COLOR
+    
+    CloseBtn.MouseButton1Click:Connect(function()
+        creditsGui:Destroy()
+    end)
+end
+
+--// Conectores
+Players.PlayerAdded:Connect(function(player)
+    if player == LocalPlayer then
+        player.CharacterAdded:Connect(function(character)
+            wait(1)
+            miscFunctions:SetWalkSpeed(Config.Misc.WalkSpeed)
+            miscFunctions:SetJumpPower(Config.Misc.JumpPower)
+        end)
+    end
+end)
+
+--// Menu UI
+local Menu = {Tabs = {}}
+
+function Menu:Init()
+    local ScreenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
+    ScreenGui.Name = "NataMenu"
+    
+    -- Frame principal RETANGULAR
+    local Main = Instance.new("Frame", ScreenGui)
+    Main.Size = UDim2.new(0, 520, 0, 350)
+    Main.Position = UDim2.new(0.5, -260, 0.5, -175)
+    Main.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+    Main.BorderSizePixel = 1
+    Main.BorderColor3 = Color3.fromRGB(40, 40, 40)
+    
+    local Sidebar = Instance.new("Frame", Main)
+    Sidebar.Size = UDim2.new(0, 140, 1, 0)
+    Sidebar.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+    Sidebar.BorderSizePixel = 0
+
+    -- LOGO GRANDE
+    local LogoFrame = Instance.new("Frame", Sidebar)
+    LogoFrame.Size = UDim2.new(1, 0, 0, 100)
+    LogoFrame.BackgroundTransparency = 1
+    LogoFrame.BorderSizePixel = 0
+    
+    local Logo = Instance.new("ImageLabel", LogoFrame)
+    Logo.Size = UDim2.new(1, -20, 1, -10)
+    Logo.Position = UDim2.new(0, 10, 0, 5)
+    Logo.Image = "rbxassetid://119063061180459"
+    Logo.BackgroundTransparency = 1
+    Logo.ScaleType = Enum.ScaleType.Fit
+    
+    -- Efeito de brilho no logo
+    local LogoGlow = Instance.new("UIGradient", Logo)
+    LogoGlow.Rotation = 90
+    LogoGlow.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 230, 255)),
+        ColorSequenceKeypoint.new(1, Color3.new(1, 1, 1))
+    })
+    LogoGlow.Transparency = NumberSequence.new({
+        NumberSequenceKeypoint.new(0, 0.3),
+        NumberSequenceKeypoint.new(0.5, 0),
+        NumberSequenceKeypoint.new(1, 0.3)
+    })
+
+    local TabContainer = Instance.new("Frame", Sidebar)
+    TabContainer.Position = UDim2.new(0, 0, 0, 110) -- Ajustado para baixo do logo
+    TabContainer.Size = UDim2.new(1, 0, 1, -110)
+    TabContainer.BackgroundTransparency = 1
+    TabContainer.BorderSizePixel = 0
+    Instance.new("UIListLayout", TabContainer)
+
+    local ContentArea = Instance.new("Frame", Main)
+    ContentArea.Position = UDim2.new(0, 150, 0, 10)
+    ContentArea.Size = UDim2.new(1, -160, 1, -20)
+    ContentArea.BackgroundTransparency = 1
+    ContentArea.BorderSizePixel = 0
+
+    local function SyncAimbot()
+        if getgenv().Aimbot then
+            local AB = getgenv().Aimbot
+            AB.Enabled = Config.Aimbot.Enabled
+            AB.FOV = Config.Aimbot.FOV
+            AB.Smoothness = Config.Aimbot.Smoothness
+            AB.TargetPart = Config.Aimbot.TargetPart
+        end
+    end
+
+    function Menu:CreateTab(name, icon)
+        local TabBtn = Instance.new("TextButton", TabContainer)
+        TabBtn.Size = UDim2.new(1, 0, 0, 35)
+        TabBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        TabBtn.Text = icon .. " " .. name
+        TabBtn.TextColor3 = Color3.fromRGB(150, 150, 150)
+        TabBtn.Font = Enum.Font.SourceSans
+        TabBtn.TextSize = 13
+        TabBtn.BorderSizePixel = 0
+        TabBtn.TextXAlignment = Enum.TextXAlignment.Left
+
+        local Page = Instance.new("ScrollingFrame", ContentArea)
+        Page.Size = UDim2.new(1, 0, 1, 0)
+        Page.BackgroundTransparency = 1
+        Page.Visible = false
+        Page.ScrollBarThickness = 2
+        Page.ScrollBarImageColor3 = BLUE_COLOR
+        Page.BorderSizePixel = 0
+        Instance.new("UIListLayout", Page).Padding = UDim.new(0, 10)
+
+        TabBtn.MouseButton1Click:Connect(function()
+            for _, v in pairs(Menu.Tabs) do
+                v.Page.Visible = false
+                v.Btn.TextColor3 = Color3.fromRGB(150, 150, 150)
+                v.Btn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+            end
+            Page.Visible = true
+            TabBtn.TextColor3 = WHITE_COLOR
+            TabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        end)
+
+        Menu.Tabs[name] = {Page = Page, Btn = TabBtn}
+        return Page
+    end
+
+    local function AddToggle(parent, text, default, callback)
+        local Container = Instance.new("Frame", parent)
+        Container.Size = UDim2.new(1, -10, 0, 35)
+        Container.BackgroundTransparency = 1
+        Container.BorderSizePixel = 0
+        
+        local Btn = Instance.new("TextButton", Container)
+        Btn.Size = UDim2.new(1, 0, 1, 0)
+        Btn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        Btn.Text = (default and "✓ " or "✗ ") .. text
+        Btn.TextColor3 = default and LIGHT_BLUE or Color3.fromRGB(150, 150, 150)
+        Btn.Font = Enum.Font.SourceSans
+        Btn.TextSize = 13
+        Btn.TextXAlignment = Enum.TextXAlignment.Left
+        Btn.BorderSizePixel = 0
+
+        Btn.MouseButton1Click:Connect(function()
+            default = not default
+            Btn.Text = (default and "✓ " or "✗ ") .. text
+            Btn.TextColor3 = default and LIGHT_BLUE or Color3.fromRGB(150, 150, 150)
+            callback(default)
+        end)
+    end
+
+    local function AddSlider(parent, text, min, max, default, callback)
+        local Container = Instance.new("Frame", parent)
+        Container.Size = UDim2.new(1, -10, 0, 50)
+        Container.BackgroundTransparency = 1
+        Container.BorderSizePixel = 0
+
+        local Label = Instance.new("TextLabel", Container)
+        Label.Text = "📏 " .. text .. ": " .. default
+        Label.Size = UDim2.new(1, 0, 0, 20)
+        Label.TextColor3 = WHITE_COLOR
+        Label.BackgroundTransparency = 1
+        Label.TextXAlignment = Enum.TextXAlignment.Left
+        Label.Font = Enum.Font.SourceSans
+        Label.TextSize = 13
+        Label.BorderSizePixel = 0
+
+        local Bar = Instance.new("TextButton", Container)
+        Bar.Position = UDim2.new(0, 0, 0, 25)
+        Bar.Size = UDim2.new(1, 0, 0, 6)
+        Bar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        Bar.Text = ""
+        Bar.BorderSizePixel = 0
+
+        local Fill = Instance.new("Frame", Bar)
+        Fill.Size = UDim2.new((default-min)/(max-min), 0, 1, 0)
+        Fill.BackgroundColor3 = LIGHT_BLUE
+        Fill.BorderSizePixel = 0
+
+        Bar.MouseButton1Down:Connect(function()
+            local conn
+            conn = RunService.RenderStepped:Connect(function()
+                local mp = UserInputService:GetMouseLocation().X
+                local per = math.clamp((mp - Bar.AbsolutePosition.X)/Bar.AbsoluteSize.X, 0, 1)
+                local val = min + (max-min)*per
+                if max <= 5 then val = tonumber(string.format("%.1f", val)) else val = math.floor(val) end
+                Fill.Size = UDim2.new(per, 0, 1, 0)
+                Label.Text = "📏 " .. text .. ": " .. val
+                callback(val)
+            end)
+            local endedConn = UserInputService.InputEnded:Connect(function(i)
+                if i.UserInputType == Enum.UserInputType.MouseButton1 then
+                    conn:Disconnect()
+                    endedConn:Disconnect()
+                end
+            end)
+        end)
+    end
+
+    local function AddDropdown(parent, text, options, callback)
+        local Container = Instance.new("Frame", parent)
+        Container.Size = UDim2.new(1, -10, 0, 35)
+        Container.BackgroundTransparency = 1
+        Container.BorderSizePixel = 0
+
+        local Btn = Instance.new("TextButton", Container)
+        Btn.Size = UDim2.new(1, 0, 1, 0)
+        Btn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+        Btn.Text = "▼ " .. text .. ": " .. options[1]
+        Btn.TextColor3 = WHITE_COLOR
+        Btn.Font = Enum.Font.SourceSans
+        Btn.TextSize = 13
+        Btn.TextXAlignment = Enum.TextXAlignment.Left
+        Btn.BorderSizePixel = 0
+
+        local idx = 1
+        Btn.MouseButton1Click:Connect(function()
+            idx = idx + 1
+            if idx > #options then idx = 1 end
+            Btn.Text = "▼ " .. text .. ": " .. options[idx]
+            callback(options[idx])
+        end)
+    end
+
+    local function AddButton(parent, text, icon, callback)
+        local Btn = Instance.new("TextButton", parent)
+        Btn.Size = UDim2.new(1, -10, 0, 35)
+        Btn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+        Btn.Text = icon .. " " .. text
+        Btn.TextColor3 = WHITE_COLOR
+        Btn.Font = Enum.Font.SourceSans
+        Btn.TextSize = 13
+        Btn.BorderSizePixel = 0
+
+        Btn.MouseButton1Click:Connect(callback)
+    end
+
+    -- Abas
+    local LegitPage = Menu:CreateTab("LegitBot", "🎯")
+    AddToggle(LegitPage, "Aimbot", Config.Aimbot.Enabled, function(v) Config.Aimbot.Enabled = v SyncAimbot() end)
+    AddSlider(LegitPage, "Field of View", 10, 600, Config.Aimbot.FOV, function(v) Config.Aimbot.FOV = v SyncAimbot() end)
+    AddSlider(LegitPage, "Smoothness", 0, 5, Config.Aimbot.Smoothness, function(v) Config.Aimbot.Smoothness = v SyncAimbot() end)
+    AddDropdown(LegitPage, "Target Part", {"Head", "HumanoidRootPart", "Torso"}, function(v) Config.Aimbot.TargetPart = v SyncAimbot() end)
+    AddToggle(LegitPage, "Team Check", Config.Aimbot.TeamCheck, function(v) Config.Aimbot.TeamCheck = v SyncAimbot() end)
+
+    local VisualPage = Menu:CreateTab("Visuals", "👁")
+    AddToggle(VisualPage, "Enable ESP", Config.Visuals.Enabled, function(v) Config.Visuals.Enabled = v end)
+    AddToggle(VisualPage, "Boxes", Config.Visuals.Boxes, function(v) Config.Visuals.Boxes = v end)
+    AddToggle(VisualPage, "Names", Config.Visuals.Names, function(v) Config.Visuals.Names = v end)
+    AddToggle(VisualPage, "Health", Config.Visuals.Health, function(v) Config.Visuals.Health = v end)
+    AddToggle(VisualPage, "Team Check", Config.Visuals.TeamCheck, function(v) Config.Visuals.TeamCheck = v end)
+    AddSlider(VisualPage, "Max Distance", 100, 5000, Config.Visuals.MaxDistance, function(v) Config.Visuals.MaxDistance = v end)
+
+    -- Aba Misc
+    local MiscPage = Menu:CreateTab("Misc", "⚙")
+
+    local skyColors = {"Default", "Blue", "Night", "Purple", "Sunset", "Ocean"}
+    local colorMap = {
+        Default = nil,
+        Blue = Color3.fromRGB(100, 180, 255),
+        Night = Color3.fromRGB(50, 100, 150),
+        Purple = Color3.fromRGB(180, 100, 255),
+        Sunset = Color3.fromRGB(255, 160, 100),
+        Ocean = Color3.fromRGB(0, 120, 200)
+    }
+
+    AddDropdown(MiscPage, "Sky Color", skyColors, function(selected)
+        local sky = Lighting:FindFirstChild("NataMenu_Sky")
+        local cc = Lighting:FindFirstChild("NataMenu_SkyTint")
+        
+        if sky then sky:Destroy() end
+        if cc then cc:Destroy() end
+
+        if selected == "Default" then return end
+
+        local targetColor = colorMap[selected]
+
+        local newSky = Instance.new("Sky")
+        newSky.Name = "NataMenu_Sky"
+        newSky.Parent = Lighting
+        newSky.CelestialBodiesShown = false
+
+        local newCC = Instance.new("ColorCorrectionEffect")
+        newCC.Name = "NataMenu_SkyTint"
+        newCC.Parent = Lighting
+        newCC.Enabled = true
+        newCC.TintColor = targetColor
+        newCC.Brightness = -0.05
+    end)
+
+    -- Funções Misc
+    AddToggle(MiscPage, "Night Mode", Config.Misc.NightMode, function(v)
+        Config.Misc.NightMode = v
+        miscFunctions:ToggleNightMode(v)
+    end)
+
+    AddToggle(MiscPage, "Fullbright", Config.Misc.Fullbright, function(v)
+        Config.Misc.Fullbright = v
+        miscFunctions:ToggleFullbright(v)
+    end)
+
+    AddToggle(MiscPage, "Noclip", Config.Misc.NoClip, function(v)
+        Config.Misc.NoClip = v
+        miscFunctions:ToggleNoClip(v)
+    end)
+
+    AddSlider(MiscPage, "Walk Speed", 16, 100, Config.Misc.WalkSpeed, function(v)
+        Config.Misc.WalkSpeed = v
+        miscFunctions:SetWalkSpeed(v)
+    end)
+
+    AddSlider(MiscPage, "Jump Power", 50, 200, Config.Misc.JumpPower, function(v)
+        Config.Misc.JumpPower = v
+        miscFunctions:SetJumpPower(v)
+    end)
+
+    AddToggle(MiscPage, "FPS Boost", Config.Misc.FPSBoost, function(v)
+        Config.Misc.FPSBoost = v
+        miscFunctions:ToggleFPSBoost(v)
+    end)
+
+    AddToggle(MiscPage, "Auto Click", Config.Misc.AutoClick, function(v)
+        Config.Misc.AutoClick = v
+        miscFunctions:ToggleAutoClick(v)
+    end)
+
+    AddToggle(MiscPage, "Anti-AFK", Config.Misc.AntiAFK, function(v)
+        Config.Misc.AntiAFK = v
+        miscFunctions:ToggleAntiAFK(v)
+    end)
+
+    AddToggle(MiscPage, "Bypass", Config.Misc.Bypass, function(v)
+        Config.Misc.Bypass = v
+        miscFunctions:ToggleBypass(v)
+    end)
+
+    -- Botões
+    AddButton(MiscPage, "Refresh ESP", "🔄", function()
+        for _, drawing in pairs(ESP.Drawings) do
+            for _, d in pairs(drawing) do
+                d:Remove()
+            end
+        end
+        ESP.Drawings = {}
+        for _, p in ipairs(Players:GetPlayers()) do ESP:AddPlayer(p) end
+    end)
+
+    AddButton(MiscPage, "Copy Discord", "📋", function()
+        setclipboard("discord.gg/natamenu")
+    end)
+
+    AddButton(MiscPage, "Hide Menu (F5)", "👁", function()
+        ScreenGui.Enabled = not ScreenGui.Enabled
+    end)
+
+    AddButton(MiscPage, "Credits", "⭐", function()
+        miscFunctions:ShowCredits()
+    end)
+
+    -- Abrir LegitBot por padrão
+    Menu.Tabs["LegitBot"].Btn.TextColor3 = WHITE_COLOR
+    Menu.Tabs["LegitBot"].Btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    Menu.Tabs["LegitBot"].Page.Visible = true
+
+    -- Draggable
+    local dragging, dragStart, startPos
+    Main.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = Main.Position
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local delta = input.Position - dragStart
+            Main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+
+    -- Toggle F5
+    UserInputService.InputBegan:Connect(function(input)
+        if input.KeyCode == Enum.KeyCode.F5 then
+            ScreenGui.Enabled = not ScreenGui.Enabled
+        end
+    end)
+
+    -- Watermark
+    local Watermark = Instance.new("ScreenGui", game:GetService("CoreGui"))
+    Watermark.Name = "NataMenuWatermark"
+    Watermark.Enabled = true
+    
+    local WatermarkFrame = Instance.new("Frame", Watermark)
+    WatermarkFrame.Size = UDim2.new(0, 150, 0, 25)
+    WatermarkFrame.Position = UDim2.new(1, -160, 0, 10)
+    WatermarkFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+    WatermarkFrame.BorderSizePixel = 1
+    WatermarkFrame.BorderColor3 = BLUE_COLOR
+    
+    local WatermarkLabel = Instance.new("TextLabel", WatermarkFrame)
+    WatermarkLabel.Size = UDim2.new(1, 0, 1, 0)
+    WatermarkLabel.Text = "NATA.MENU v1.0"
+    WatermarkLabel.TextColor3 = LIGHT_BLUE
+    WatermarkLabel.Font = Enum.Font.SourceSans
+    WatermarkLabel.TextSize = 12
+    WatermarkLabel.BackgroundTransparency = 1
+
+    -- Créditos
+    local Credits = Instance.new("TextLabel", ScreenGui)
+    Credits.Text = "Designer: Farpa | Programmer: Toque"
+    Credits.Size = UDim2.new(0, 250, 0, 20)
+    Credits.Position = UDim2.new(1, -260, 0, 40)
+    Credits.BackgroundTransparency = 1
+    Credits.TextColor3 = Color3.fromRGB(150, 150, 150)
+    Credits.Font = Enum.Font.SourceSans
+    Credits.TextSize = 11
+    Credits.BorderSizePixel = 0
+
+    -- Iniciar funções
+    miscFunctions:ToggleAntiAFK(true)
+end
+
+Menu:Init()
+
+-- Conector NoClip
+RunService.Stepped:Connect(function()
+    if Config.Misc.NoClip and LocalPlayer.Character then
+        local char = LocalPlayer.Character
+        for _, part in pairs(char:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+end)
+
+-- Atualizar WalkSpeed/JumpPower
+LocalPlayer.CharacterAdded:Connect(function(character)
+    wait(1)
+    if character then
+        local humanoid = character:FindFirstChild("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = Config.Misc.WalkSpeed
+            humanoid.JumpPower = Config.Misc.JumpPower
+        end
+    end
+end)
+
+-- Mensagem inicial
+print("╔════════════════════════════════╗")
+print("║        NATA.MENU v1.0          ║")
+print("║   🎯 LegitBot   👁 Visuals     ║")
+print("║   ⚙ Misc        🚀 Loaded!     ║")
+print("║   🖼 Logo Added                ║")
+print("╚════════════════════════════════╝")
+print("F5 - Toggle Menu")
+print("Designer: Farpa | Programmer: Toque")
